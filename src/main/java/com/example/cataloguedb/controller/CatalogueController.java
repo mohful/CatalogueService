@@ -21,11 +21,11 @@ public class CatalogueController {
         connection = JDBCConnection.connect();
     }
 
-    @GetMapping(path="/get/{id}")
-    public JSONObject getFromDatabase(@PathVariable Integer id) throws SQLException {
+    @GetMapping(path="/get")
+    public JSONObject getFromDatabase() throws SQLException {
         createConnection();
         Statement statement = connection.createStatement();
-        String query = "Select * from CatalogueDB.Catalogue Where id=" + id;
+        String query = "Select * from CatalogueDB.Catalogue";
         ResultSet rs = statement.executeQuery(query);
 
         JSONObject jsonObject = new JSONObject();
