@@ -22,10 +22,13 @@ public class CatalogueController {
     }
 
     @GetMapping(path="/get")
-    public JSONObject getFromDatabase() throws SQLException {
+    public JSONObject getFromDatabase(@RequestParam(value = "id", required = false) Integer itemId) throws SQLException {
         createConnection();
         Statement statement = connection.createStatement();
         String query = "Select * from CatalogueDB.Catalogue";
+        if (itemId!=null) {
+            query += " WHERE id=%s".formatted(itemId);
+        }
         ResultSet rs = statement.executeQuery(query);
 
         JSONObject jsonObject = new JSONObject();
