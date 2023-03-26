@@ -43,6 +43,7 @@ public class CatalogueController {
             array.add(record);
         }
         jsonObject.put("Catalogue", array);
+        connection.close();
         return jsonObject;
     }
 
@@ -52,7 +53,9 @@ public class CatalogueController {
         Statement statement = connection.createStatement();
         String insert = "INSERT INTO Catalogue (name, description, image) VALUES (" + "'" + catalogue.getName() + "'" + ", " + "'" + catalogue.getDescription() + "'" + ", " + "'" + catalogue.getImage() + "'" + ");";
         statement.executeUpdate(insert);
+        connection.close();
         return "Item " + catalogue.getName() + " has been added to the database";
+
     }
 
     @PutMapping(path="/put/{id}")
@@ -61,6 +64,7 @@ public class CatalogueController {
         Statement statement = connection.createStatement();
         String update = "UPDATE Catalogue SET name=" + "'" + catalogue.getName() + "'" + ", description=" + "'" + catalogue.getDescription() + "'" + ", image=" + "'" + catalogue.getImage() + "'" + " WHERE id=" + id + ";";
         statement.executeUpdate(update);
+        connection.close();
         return "Item " + id + " has been updated";
     }
 
@@ -70,6 +74,7 @@ public class CatalogueController {
         Statement statement = connection.createStatement();
         String delete = "DELETE FROM Catalogue WHERE id=" + id;
         statement.executeUpdate(delete);
+        connection.close();
         return "Item " + id + " has been deleted from the database";
     }
 
