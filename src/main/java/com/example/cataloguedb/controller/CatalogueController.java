@@ -1,9 +1,7 @@
 package com.example.cataloguedb.controller;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
 import com.example.cataloguedb.model.Catalogue;
 import com.example.cataloguedb.repository.JDBCConnection;
 import org.json.simple.JSONArray;
@@ -50,12 +48,19 @@ public class CatalogueController {
     @PostMapping(path = "/post", consumes = "application/json")
     public String postToDatabase(@RequestBody Catalogue catalogue) throws SQLException {
         createConnection();
-        Statement statement = connection.createStatement();
-        String insert = "INSERT INTO Catalogue (name, description, image) VALUES (" + "'" + catalogue.getName() + "'" + ", " + "'" + catalogue.getDescription() + "'" + ", " + "'" + catalogue.getImage() + "'" + ");";
-        statement.executeUpdate(insert);
-        connection.close();
-        return "Item " + catalogue.getName() + " has been added to the database";
+        String insertStatement = "INSERT INTO Catalogue (name, description, image) VALUES (" + "'" + catalogue.getName() + "'" + ", " + "'" + catalogue.getDescription() + "'" + ", " + "'" + catalogue.getImage() + "'" + ");";
+        PreparedStatement stmnt = connection.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
+        stmnt.executeUpdate();
 
+        int itemId = 0;
+        ResultSet generatedKeys = stmnt.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            itemId = generatedKeys.getInt(1);
+        }
+        connection.close();
+        return """
+                {"itemId": %s}
+                """.formatted(itemId);
     }
 
     @PutMapping(path="/put/{id}")

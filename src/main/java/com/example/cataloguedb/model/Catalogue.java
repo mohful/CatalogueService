@@ -12,6 +12,10 @@ public class Catalogue {
         this.image = image;
     }
 
+    public Catalogue(String name, String description) {
+        this(name, description, "");
+    }
+
     public Catalogue() {
     }
 
