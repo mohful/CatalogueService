@@ -6,10 +6,17 @@ public class Catalogue {
     private String description;
     private String image;
 
+    public String getFilename() {
+        return filename;
+    }
+
+    private String filename;
+
     public Catalogue(String name, String description, String image) {
         this.name = name;
         this.description = description;
         this.image = image;
+        this.filename =  "";
     }
 
     public Catalogue(String name, String description) {

@@ -37,7 +37,7 @@ public class CatalogueController {
             record.put("id", rs.getInt("id"));
             record.put("name", rs.getString("name"));
             record.put("description", rs.getString("description"));
-            record.put("image", rs.getString("image"));
+            record.put("image", rs.getString("image_data"));
             array.add(record);
         }
         jsonObject.put("Catalogue", array);
@@ -48,11 +48,12 @@ public class CatalogueController {
     @PostMapping(path = "/post", consumes = "application/json")
     public String postToDatabase(@RequestBody Catalogue catalogue) throws SQLException {
         createConnection();
-        String insertStatement = "INSERT INTO Catalogue (name, description, image) VALUES (?, ?, ?);";
+        String insertStatement = "INSERT INTO Catalogue (name, description, image_data, filename) VALUES (?, ?, ?, ?);";
         PreparedStatement stmnt = connection.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
         stmnt.setString(1, catalogue.getName());
         stmnt.setString(2, catalogue.getDescription());
         stmnt.setString(3, catalogue.getImage());
+        stmnt.setString(4, catalogue.getFilename());
         stmnt.executeUpdate();
 
         int itemId = 0;
@@ -69,7 +70,7 @@ public class CatalogueController {
     @PutMapping(path="/put/{id}")
     public String putToDatabase(@PathVariable Integer id, @RequestBody Catalogue catalogue) throws SQLException {
         createConnection();
-        String updateStatement = "UPDATE Catalogue SET name=?, description=?, image=? WHERE id=?;";
+        String updateStatement = "UPDATE Catalogue SET name=?, description=?, image_data=? WHERE id=?;";
         PreparedStatement statement = connection.prepareStatement(updateStatement, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, catalogue.getName());
         statement.setString(2, catalogue.getDescription());
