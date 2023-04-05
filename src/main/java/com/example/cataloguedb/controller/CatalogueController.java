@@ -48,8 +48,11 @@ public class CatalogueController {
     @PostMapping(path = "/post", consumes = "application/json")
     public String postToDatabase(@RequestBody Catalogue catalogue) throws SQLException {
         createConnection();
-        String insertStatement = "INSERT INTO Catalogue (name, description, image) VALUES (" + "'" + catalogue.getName() + "'" + ", " + "'" + catalogue.getDescription() + "'" + ", " + "'" + catalogue.getImage() + "'" + ");";
+        String insertStatement = "INSERT INTO Catalogue (name, description, image) VALUES (?, ?, ?);";
         PreparedStatement stmnt = connection.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
+        stmnt.setString(1, catalogue.getName());
+        stmnt.setString(2, catalogue.getDescription());
+        stmnt.setString(3, catalogue.getImage());
         stmnt.executeUpdate();
 
         int itemId = 0;
@@ -66,9 +69,13 @@ public class CatalogueController {
     @PutMapping(path="/put/{id}")
     public String putToDatabase(@PathVariable Integer id, @RequestBody Catalogue catalogue) throws SQLException {
         createConnection();
-        Statement statement = connection.createStatement();
-        String update = "UPDATE Catalogue SET name=" + "'" + catalogue.getName() + "'" + ", description=" + "'" + catalogue.getDescription() + "'" + ", image=" + "'" + catalogue.getImage() + "'" + " WHERE id=" + id + ";";
-        statement.executeUpdate(update);
+        String updateStatement = "UPDATE Catalogue SET name=?, description=?, image=? WHERE id=?;";
+        PreparedStatement statement = connection.prepareStatement(updateStatement, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, catalogue.getName());
+        statement.setString(2, catalogue.getDescription());
+        statement.setString(3, catalogue.getImage());
+        statement.setInt(4, id);
+        statement.executeUpdate();
         connection.close();
         return "Item " + id + " has been updated";
     }
